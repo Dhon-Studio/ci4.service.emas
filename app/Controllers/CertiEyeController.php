@@ -53,8 +53,9 @@ class CertiEyeController extends ResourceController
             $changes = $this->changes->orderBy('created_at', 'desc')->first()['changes'];
 
             foreach ($data as $key => $value) {
-                $data[$key]['jual'] = $value['jual'] + $changes;
-                $data[$key]['buyback'] = $value['buyback'] + $changes;
+                $change = $value['pecahan'] == '0,5' ? $changes / 2 : $changes * $value['pecahan'];
+                $data[$key]['jual'] = $value['jual'] + $change;
+                $data[$key]['buyback'] = $value['buyback'] + $change;
             }
 
             $this->result->Data = json_decode(json_encode($data, JSON_NUMERIC_CHECK), true);
