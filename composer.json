@@ -10,7 +10,8 @@
         "slack": "https://codeigniterchat.slack.com"
     },
     "require": {
-        "firebase/php-jwt": "^6.10"
+        "firebase/php-jwt": "^6.10",
+        "ramsey/uuid": "^4.7"
     },
     "autoload": {
         "exclude-from-classmap": [

@@ -99,7 +99,7 @@ class CertiEyeController extends ResourceController
     public function update($id = null)
     {
         try {
-            $this->model->updateBatch($this->request->getJsonVar());
+            $this->model->update($id, $this->request->getJsonVar());
 
             $this->result->Data = $this->model->where('id', $id)->first();
 
