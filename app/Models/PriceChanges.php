@@ -7,12 +7,13 @@ use CodeIgniter\Model;
 class PriceChanges extends Model
 {
     protected $table            = 'price_changes';
-    protected $primaryKey       = 'id';
+    // protected $primaryKey       = 'id';
     protected $useAutoIncrement = false;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
+        'id',
         'changes'
     ];
 

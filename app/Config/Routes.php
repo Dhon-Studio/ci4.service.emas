@@ -9,3 +9,8 @@ $routes->resource('certieye', [
     'controller' => 'CertiEyeController',
     'filter' => 'cors'
 ]);
+
+$routes->resource('pricechanges', [
+    'controller' => 'PriceChangesController',
+    'filter' => 'auth'
+]);

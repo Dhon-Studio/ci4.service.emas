@@ -2,23 +2,18 @@
 
 namespace App\Controllers;
 
-use App\Models\CertiEye;
 use App\Models\PriceChanges;
 use App\Models\Result;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\RESTful\ResourceController;
+use Ramsey\Uuid\Uuid;
 
-class CertiEyeController extends ResourceController
+class PriceChangesController extends ResourceController
 {
-    /**
-     * @var \App\Models\CertiEye
-     */
-    protected $model;
-
     /**
      * @var \App\Models\PriceChanges
      */
-    protected $changes;
+    protected $model;
 
     /**
      * @var \App\Models\Result
@@ -27,8 +22,7 @@ class CertiEyeController extends ResourceController
 
     public function __construct()
     {
-        $this->model = new CertiEye();
-        $this->changes = new PriceChanges();
+        $this->model = new PriceChanges();
         $this->result = new Result();
     }
 
@@ -40,22 +34,7 @@ class CertiEyeController extends ResourceController
     public function index()
     {
         try {
-            $data = $this->model->findAll();
-
-            $order = array('0,5', 1, 2, 3, 5, 10);
-
-            usort($data, function ($a, $b) use ($order) {
-                $pos_a = array_search($a['pecahan'], $order);
-                $pos_b = array_search($b['pecahan'], $order);
-                return $pos_a - $pos_b;
-            });
-
-            $changes = $this->changes->orderBy('created_at', 'desc')->first()['changes'];
-
-            foreach ($data as $key => $value) {
-                $data[$key]['jual'] = $value['jual'] + $changes;
-                $data[$key]['buyback'] = $value['buyback'] + $changes;
-            }
+            $data = $this->model->orderBy('created_at', 'desc')->findAll();
 
             $this->result->Data = json_decode(json_encode($data, JSON_NUMERIC_CHECK), true);
 
@@ -92,7 +71,17 @@ class CertiEyeController extends ResourceController
      */
     public function create()
     {
-        //
+        try {
+            $post = $this->request->getPost();
+            $post['id'] = Uuid::uuid4();
+            $id = $this->model->insert($post);
+
+            $this->result->Data = $this->model->where('id', $id)->first();
+
+            return $this->respond($this->result);
+        } catch (\Throwable $th) {
+            return $this->failForbidden($th->getMessage());
+        }
     }
 
     /**
