@@ -54,5 +54,6 @@ jobs:
             echo "database.default.DBDriver = MySQLi" >> .env &&
             echo "database.default.DBPrefix = " >> .env &&
             echo "database.default.port = 3306" >> .env &&
+            php spark migrate &&
             php ./composer.phar install &&
             chmod -R 755 .
