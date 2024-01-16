@@ -72,11 +72,15 @@ class PriceChangesController extends ResourceController
     public function create()
     {
         try {
+            $changes = $this->model->orderBy('created_at', 'desc')->first()['changes'];
+
             $post = $this->request->getPost();
             $post['id'] = Uuid::uuid4();
+            $post['changes'] = $changes + $post['changes'];
             $id = $this->model->insert($post);
 
             $this->result->Data = $this->model->where('id', $id)->first();
+            $this->result->Data['changes'] = $this->request->getPost('changes');
 
             return $this->respond($this->result);
         } catch (\Throwable $th) {
