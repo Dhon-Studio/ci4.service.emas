@@ -91,7 +91,7 @@ class PriceChangesController extends ResourceController
 
         if ($price != $certi1gr) {
             $post['id'] = Uuid::uuid4();
-            $post['changes'] = $change + $price - $certi1gr;
+            $post['changes'] = $change + $price - $certi1gr + 25000;
             $id = $this->model->insert($post);
         }
 
