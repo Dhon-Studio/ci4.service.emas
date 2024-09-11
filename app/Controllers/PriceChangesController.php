@@ -2,10 +2,14 @@
 
 namespace App\Controllers;
 
+use App\Models\CertiEye;
 use App\Models\PriceChanges;
 use App\Models\Result;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\RESTful\ResourceController;
+use DOMDocument;
+use DOMXPath;
+use GuzzleHttp\Client;
 use Ramsey\Uuid\Uuid;
 
 class PriceChangesController extends ResourceController
@@ -16,6 +20,11 @@ class PriceChangesController extends ResourceController
     protected $model;
 
     /**
+     * @var \App\Models\CertiEye
+     */
+    protected $certi;
+
+    /**
      * @var \App\Models\Result
      */
     protected $result;
@@ -23,6 +32,7 @@ class PriceChangesController extends ResourceController
     public function __construct()
     {
         $this->model = new PriceChanges();
+        $this->certi = new CertiEye();
         $this->result = new Result();
     }
 
@@ -51,7 +61,43 @@ class PriceChangesController extends ResourceController
      */
     public function show($id = null)
     {
-        //
+        $change = $this->model->orderBy('created_at', 'desc')->first()['changes'];
+        $certi1gr = $this->certi->where('pecahan', 1)->first()['jual'] + $change;
+
+        $httpClient = new Client();
+        $response = $httpClient->get('https://www.logammulia.com/id/harga-emas-hari-ini');
+        $htmlString = (string) $response->getBody();
+        //add this line to suppress any warnings
+        libxml_use_internal_errors(true);
+        $doc = new DOMDocument();
+        $doc->loadHTML($htmlString);
+        $xpath = new DOMXPath($doc);
+
+        $datas = $xpath->evaluate('//table[@class="table table-bordered"]');
+        $extractedDatas = [];
+        foreach ($datas as $data) {
+            array_push($extractedDatas, $data->textContent . PHP_EOL);
+        }
+
+        $crawled = explode("\n\n\n", $extractedDatas[0]);
+
+        $price = 0;
+        foreach ($crawled as $crawl) {
+            if (strpos($crawl, "1 gr") !== false) {
+                $price = (int)str_replace(",", "", explode("\n", $crawl)[1]);
+                break;
+            }
+        }
+
+        if ($price != $certi1gr) {
+            $post['id'] = Uuid::uuid4();
+            $post['changes'] = $change + $price - $certi1gr;
+            $id = $this->model->insert($post);
+        }
+
+        $this->result->Data = $this->model->where('id', $id)->first();
+
+        return $this->respond($this->result);
     }
 
     /**

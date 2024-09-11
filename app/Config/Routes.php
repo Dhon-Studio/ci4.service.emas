@@ -11,6 +11,7 @@ $routes->resource('certieye', [
 ]);
 
 $routes->get('pricechange', 'PriceChangesController::index', ['filter' => 'cors']);
+$routes->get('crawl', 'PriceChangesController::show/$1', ['filter' => 'cors']);
 $routes->resource('pricechanges', [
     'controller' => 'PriceChangesController',
     'filter' => 'auth'
