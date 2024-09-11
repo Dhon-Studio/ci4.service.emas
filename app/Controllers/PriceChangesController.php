@@ -84,14 +84,14 @@ class PriceChangesController extends ResourceController
         $price = 0;
         foreach ($crawled as $crawl) {
             if (strpos($crawl, "1 gr") !== false) {
-                $price = (int)str_replace(",", "", explode("\n", $crawl)[1]);
+                $price = (int)str_replace(",", "", explode("\n", $crawl)[1]) + 25000;
                 break;
             }
         }
 
         if ($price != $certi1gr) {
             $post['id'] = Uuid::uuid4();
-            $post['changes'] = $change + $price - $certi1gr + 25000;
+            $post['changes'] = $change + $price - $certi1gr;
             $id = $this->model->insert($post);
         }
 
