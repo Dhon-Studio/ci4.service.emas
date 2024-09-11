@@ -55,5 +55,5 @@ jobs:
             echo "database.default.DBPrefix = " >> .env &&
             echo "database.default.port = 3306" >> .env &&
             php spark migrate &&
-            php ./composer.phar install &&
+            php ./composer.phar update &&
             chmod -R 755 .
