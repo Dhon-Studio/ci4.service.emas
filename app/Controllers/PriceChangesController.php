@@ -84,7 +84,7 @@ class PriceChangesController extends ResourceController
         $price = 0;
         foreach ($crawled as $crawl) {
             if (strpos($crawl, "1 gr") !== false) {
-                $price = (int)str_replace(",", "", explode("\n", $crawl)[1]) + 25000;
+                $price = (int)str_replace(",", "", explode("\n", $crawl)[21]) + 25000;
                 break;
             }
         }
