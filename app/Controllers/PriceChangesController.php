@@ -65,7 +65,7 @@ class PriceChangesController extends ResourceController
         $certi1gr = $this->certi->where('pecahan', 1)->first()['jual'] + $change;
 
         $httpClient = new Client();
-        $response = $httpClient->get('https://www.logammulia.com/id/harga-emas-hari-ini');
+        $response = $httpClient->get('https://anekalogam.co.id/id');
         $htmlString = (string) $response->getBody();
         //add this line to suppress any warnings
         libxml_use_internal_errors(true);
@@ -73,18 +73,25 @@ class PriceChangesController extends ResourceController
         $doc->loadHTML($htmlString);
         $xpath = new DOMXPath($doc);
 
-        $datas = $xpath->evaluate('//table[@class="table table-bordered"]');
+        $datas = $xpath->evaluate('//table[@class="table lm-table"]');
         $extractedDatas = [];
         foreach ($datas as $data) {
             array_push($extractedDatas, $data->textContent . PHP_EOL);
         }
 
-        $crawled = explode("\n\n\n", $extractedDatas[0]);
+        $crawled = explode(
+            "%0A%09%09%09%09%09%09%09%09%09%09++%0A%09%09%09%09%09++++%0A%09%09%09%09%09%09%09",
+            urlencode($extractedDatas[0])
+        );
 
         $price = 0;
         foreach ($crawled as $crawl) {
-            if (strpos($crawl, "1 gr") !== false) {
-                $price = (int)str_replace(",", "", explode("\n", $crawl)[21]) + 25000;
+            if (strpos($crawl, "1gram") !== false) {
+                $price = (int)str_replace(
+                    [".", "%0A%09%09%09%09%09++++%09%0A%09%09%09%09%09++++%0A%09%09%09%09%09++++%0A%09%09%09%09%09++++%09%0A++++++++++++++++++++++++++++%09Rp%0A%09%09%09%09%09++++%09%091.370.000%0A%09%09%09%09%09++++%09%0A%09%09%09%09%09++++%0A%09%09%09%09%09++"],
+                    ["", ""],
+                    explode("%0A%09%09%09%09%09++++%0A%0A%09%09%09%09%09++++%0A%09%09%09%09%09++++%09%0A++++++++++++++++++++++++++++%09Rp%0A%09%09%09%09%09++++%09%09", $crawl)[1]
+                ) + 25000;
                 break;
             }
         }
