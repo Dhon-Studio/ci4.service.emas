@@ -44,7 +44,7 @@ class PriceChangesController extends ResourceController
     public function index()
     {
         try {
-            $data = $this->model->orderBy('created_at', 'desc')->findAll();
+            $data = $this->model->orderBy('created_at', 'desc')->first();
 
             $this->result->Data = json_decode(json_encode($data, JSON_NUMERIC_CHECK), true);
 
