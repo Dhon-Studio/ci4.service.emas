@@ -9,6 +9,7 @@ $routes->resource('certieye', [
     'controller' => 'CertiEyeController',
     'filter' => 'cors'
 ]);
+$routes->options('certieye', 'CertiEyeController::index', ['filter' => 'cors']);
 
 $routes->get('pricechange', 'PriceChangesController::index', ['filter' => 'cors']);
 $routes->get('crawl', 'PriceChangesController::show/$1', ['filter' => 'cors']);

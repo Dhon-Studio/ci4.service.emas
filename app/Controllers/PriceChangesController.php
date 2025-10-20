@@ -125,7 +125,8 @@ class PriceChangesController extends ResourceController
     public function create()
     {
         try {
-            $changes = $this->model->orderBy('created_at', 'desc')->first()['changes'];
+            $changeExist = $this->model->orderBy('created_at', 'desc')->first();
+            $changes = $changeExist ? $changeExist['changes'] : 0;
 
             $post = $this->request->getPost();
             $post['id'] = Uuid::uuid4();

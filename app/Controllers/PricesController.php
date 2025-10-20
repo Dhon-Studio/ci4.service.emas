@@ -35,6 +35,10 @@ class PricesController extends ResourceController
     {
         $result = $this->price->findAll();
 
+        foreach ($result as $key => $value) {
+            $result[$key]['priceFormatted'] = 'IDR ' . number_format($value['price'], 2);
+        }
+
         $this->result->setData($result);
 
         return $this->respond($this->result);

@@ -55,7 +55,9 @@ class CertiEyeController extends ResourceController
             foreach ($data as $key => $value) {
                 $change = $value['pecahan'] == '0,5' ? $changes / 2 : $changes * $value['pecahan'];
                 $data[$key]['jual'] = $value['jual'] + $change;
+                $data[$key]['jualFormatted'] = 'IDR ' . number_format($data[$key]['jual'], 2);
                 $data[$key]['buyback'] = $value['buyback'] + $change;
+                $data[$key]['buybackFormatted'] = 'IDR ' . number_format($data[$key]['jual'], 2);
             }
 
             $this->result->Data = json_decode(json_encode($data, JSON_NUMERIC_CHECK), true);
