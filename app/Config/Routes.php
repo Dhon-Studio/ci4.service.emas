@@ -17,3 +17,9 @@ $routes->resource('pricechanges', [
     'filter' => 'auth'
 ]);
 $routes->options('pricechanges', 'PriceChangesController::index', ['filter' => 'cors']);
+
+$routes->resource('prices', [
+    'controller' => 'PricesController',
+    'filter' => 'auth'
+]);
+$routes->options('prices', 'PricesController::index', ['filter' => 'cors']);
