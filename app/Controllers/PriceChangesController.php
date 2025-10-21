@@ -7,6 +7,7 @@ use App\Models\PriceChanges;
 use App\Models\Result;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\RESTful\ResourceController;
+use DateTime;
 use DOMDocument;
 use DOMXPath;
 use GuzzleHttp\Client;
@@ -44,7 +45,22 @@ class PriceChangesController extends ResourceController
     public function index()
     {
         try {
-            $data = $this->model->orderBy('created_at', 'desc')->first();
+            $dataPre = $this->model->orderBy('created_at', 'desc');
+
+            $data = null;
+            if ($this->request->getGet('array')) {
+                $data = $dataPre->findAll();
+
+                foreach ($data as $key => $value) {
+                    $nextIndex = $key + 1;
+                    if (isset($data[$nextIndex])) {
+                        $data[$key]['changes'] -= $data[$nextIndex]['changes'];
+                    }
+                    $data[$key]['changesFormatted'] = 'IDR ' . number_format($data[$key]['changes'], 2);
+                }
+            } else {
+                $dataPre->first();
+            }
 
             $this->result->Data = json_decode(json_encode($data, JSON_NUMERIC_CHECK), true);
 
@@ -125,8 +141,15 @@ class PriceChangesController extends ResourceController
     public function create()
     {
         try {
-            $changeExist = $this->model->orderBy('created_at', 'desc')->first();
-            $changes = $changeExist ? $changeExist['changes'] : 0;
+            $changeExist = $this->model->orderBy('created_at', 'desc')->findAll();
+            $changes = count($changeExist) > 0 ? $changeExist[0]['changes'] : 0;
+
+            $date = json_decode(json_encode(new DateTime()));
+            $onlyDate = substr($date->date, 0, 10);
+            foreach ($changeExist as $key => $value) {
+                if (substr($value['created_at'], 0, 10) == $onlyDate) return $this->failForbidden('Tanggal sudah terdapat perubahan');
+                else continue;
+            }
 
             $post = $this->request->getPost();
             $post['id'] = Uuid::uuid4();
@@ -159,7 +182,27 @@ class PriceChangesController extends ResourceController
      */
     public function update($id = null)
     {
-        //
+        try {
+            $update = $this->request->getJSON();
+
+            $all = $this->model->orderBy('created_at', 'desc')->findAll();
+            $index = array_search($id, array_column($all, 'id'));
+            $nextIndex = $index + 1;
+            if (isset($all[$nextIndex])) {
+                $update->changes = $all[$nextIndex]['changes'] + $update->changes;
+            }
+
+            $this->model->update($id, $update);
+
+            $result = $this->model->where('id', $id)->first();
+
+            $this->result->Data = $result;
+            $this->result->Message = "Berhasil diubah";
+
+            return $this->respond($this->result);
+        } catch (\Throwable $th) {
+            return $this->fail($th->getMessage());
+        }
     }
 
     /**
