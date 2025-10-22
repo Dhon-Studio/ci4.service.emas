@@ -33,7 +33,7 @@ class PricesController extends ResourceController
      */
     public function index()
     {
-        $result = $this->price->findAll();
+        $result = $this->price->orderBy('created_at', 'desc')->findAll();
 
         foreach ($result as $key => $value) {
             $result[$key]['priceFormatted'] = 'IDR ' . number_format($value['price'], 2);
@@ -111,6 +111,14 @@ class PricesController extends ResourceController
      */
     public function delete($id = null)
     {
-        //
+        try {
+            $this->price->delete($id);
+
+            $this->result->Message = 'Data berhasil dihapus';
+
+            return $this->respond($this->result);
+        } catch (\Throwable $th) {
+            return $this->failForbidden($th->getMessage());
+        }
     }
 }

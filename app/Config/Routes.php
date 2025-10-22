@@ -25,3 +25,4 @@ $routes->resource('prices', [
     'filter' => 'auth'
 ]);
 $routes->options('prices', 'PricesController::index', ['filter' => 'cors']);
+$routes->options('prices/(:segment)', 'PricesController::index', ['filter' => 'cors']);
