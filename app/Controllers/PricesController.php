@@ -34,6 +34,7 @@ class PricesController extends ResourceController
     public function index()
     {
         $result = $this->price->orderBy('created_at', 'desc');
+        $search = '';
         if ($this->request->getGet('keyword'))
             $search = strtolower($this->request->getGet('keyword'));
         if ((strpos($search, 'gr') !== false))
