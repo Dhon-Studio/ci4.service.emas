@@ -101,7 +101,17 @@ class PricesController extends ResourceController
      */
     public function update($id = null)
     {
-        //
+        try {
+            $post = $this->request->getJSON();
+
+            $this->price->update($id, $post);
+
+            $this->result->Message = 'Data berhasil diubah';
+
+            return $this->respond($this->result);
+        } catch (\Throwable $th) {
+            return $this->failForbidden($th->getMessage());
+        }
     }
 
     /**
