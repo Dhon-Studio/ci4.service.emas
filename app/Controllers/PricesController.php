@@ -33,7 +33,24 @@ class PricesController extends ResourceController
      */
     public function index()
     {
-        $result = $this->price->orderBy('created_at', 'desc')->findAll();
+        $result = $this->price->orderBy('created_at', 'desc');
+        if ($this->request->getGet('keyword'))
+            $search = strtolower($this->request->getGet('keyword'));
+        if ((strpos($search, 'gr') !== false))
+            $result
+                ->where('size', $search . trim('gr'));
+        else if (strlen($search) == 4 && is_numeric($search))
+            $result
+                ->where('year', $search);
+        else if ($search == 'rm')
+            $result
+                ->where('redmark', 1);
+        else
+            $result
+                ->like('group', $search)
+                ->orLike('owner', $search)
+                ->orLike('price', $search);
+        $result = $result->findAll();
 
         foreach ($result as $key => $value) {
             $result[$key]['priceFormatted'] = 'IDR ' . number_format($value['price'], 2);
