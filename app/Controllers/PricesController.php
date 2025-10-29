@@ -92,6 +92,7 @@ class PricesController extends ResourceController
         try {
             $post = $this->request->getPost();
             $post['id'] = Uuid::uuid4();
+            if (isset($post['custom_date'])) $post['created_at'] = $post['custom_date'];
             $this->price->insert($post);
 
             $this->result->Message = 'Data berhasil ditambahkan';

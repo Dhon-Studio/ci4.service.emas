@@ -18,7 +18,8 @@ class Prices extends Model
         'size',
         'year',
         'redmark',
-        'price'
+        'price',
+        'created_at',
     ];
 
     // Dates
