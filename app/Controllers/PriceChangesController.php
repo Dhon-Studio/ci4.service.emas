@@ -154,7 +154,7 @@ class PriceChangesController extends ResourceController
             $post = $this->request->getPost();
             $post['id'] = Uuid::uuid4();
             $post['changes'] = $changes + $post['changes'];
-            if (isset($post['custom_date'])) $post['created_at'] = $post['custom_date'];
+            if (isset($post['custom_date']) && $post['custom_date']) $post['created_at'] = $post['custom_date'];
             $id = $this->model->insert($post);
 
             $this->result->Data = $this->model->where('id', $id)->first();
@@ -192,7 +192,7 @@ class PriceChangesController extends ResourceController
             if (isset($all[$nextIndex])) {
                 $update->changes = $all[$nextIndex]['changes'] + $update->changes;
             }
-            if (isset($update->custom_date)) $update->created_at = $update->custom_date;
+            if (isset($update->custom_date) && $update->custom_date) $update->created_at = $update->custom_date;
             $this->model->update($id, $update);
 
             $result = $this->model->where('id', $id)->first();
