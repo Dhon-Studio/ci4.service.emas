@@ -122,7 +122,7 @@ class PricesController extends ResourceController
     {
         try {
             $post = $this->request->getJSON();
-
+            if (isset($post->custom_date)) $post->created_at = $post->custom_date;
             $this->price->update($id, $post);
 
             $this->result->Message = 'Data berhasil diubah';
