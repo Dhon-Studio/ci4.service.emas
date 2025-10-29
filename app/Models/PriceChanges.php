@@ -14,7 +14,8 @@ class PriceChanges extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'id',
-        'changes'
+        'changes',
+        'created_at'
     ];
 
     // Dates
