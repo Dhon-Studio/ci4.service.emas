@@ -14,8 +14,7 @@ class CreateNewCertiEyeTable extends Migration
                 'constraint' => 36,
             ],
             'pecahan' => [
-                'type' => 'VARCHAR',
-                'constraint' => 3,
+                'type' => 'INT',
             ],
             'jual' => [
                 'type' => 'INT',
