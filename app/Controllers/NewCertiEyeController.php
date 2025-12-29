@@ -36,9 +36,11 @@ class NewCertiEyeController extends ResourceController
         $result = $this->certieye->findAll();
         foreach ($result as $key => $value) {
             if ($value['pecahan'] == '0.5') $result[$key]['pecahan'] = '0,5';
-            $result[$key]['jualString'] = 'Rp ' . number_format($value['jual'], 0, ',', '.');
+
+            if ($value['jual'] == 0) $result[$key]['jualString'] = 'Belum Ada Data';
+            else $result[$key]['jualString'] = 'Rp ' . number_format($value['jual'], 0, ',', '.');
             if ($value['buyback'] == 0) $result[$key]['buybackString'] = 'Belum Ada Data';
-            else 'Rp ' . number_format($value['buyback'], 0, ',', '.');
+            else $result[$key]['buybackString'] = 'Rp ' . number_format($value['buyback'], 0, ',', '.');
         }
         $this->result->Data = $result;
 
