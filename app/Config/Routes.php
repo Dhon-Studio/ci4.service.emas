@@ -5,6 +5,13 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
+
+$routes->resource('new-certieye', [
+    'controller' => 'NewCertiEyeController',
+    'filter' => 'cors'
+]);
+$routes->options('new-certieye', 'NewCertiEyeController::index', ['filter' => 'cors']);
+
 $routes->resource('certieye', [
     'controller' => 'CertiEyeController',
     'filter' => 'cors'
@@ -15,7 +22,7 @@ $routes->get('pricechange', 'PriceChangesController::index', ['filter' => 'cors'
 $routes->get('crawl', 'PriceChangesController::show/$1', ['filter' => 'cors']);
 $routes->resource('pricechanges', [
     'controller' => 'PriceChangesController',
-    'filter' => 'auth'
+    'filter' => 'cors'
 ]);
 $routes->options('pricechanges', 'PriceChangesController::index', ['filter' => 'cors']);
 $routes->options('pricechanges/(:segment)', 'PriceChangesController::index', ['filter' => 'cors']);
