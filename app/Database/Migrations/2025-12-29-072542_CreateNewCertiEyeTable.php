@@ -14,7 +14,8 @@ class CreateNewCertiEyeTable extends Migration
                 'constraint' => 36,
             ],
             'pecahan' => [
-                'type' => 'INT',
+                'type' => 'DECIMAL',
+                'constraint' => '10,2',
             ],
             'jual' => [
                 'type' => 'INT',
