@@ -33,7 +33,7 @@ class NewCertiEyeController extends ResourceController
      */
     public function index()
     {
-        $result = $this->certieye->findAll();
+        $result = $this->certieye->orderBy('pecahan', 'asc')->findAll();
         foreach ($result as $key => $value) {
             if ($value['pecahan'] == '0.5') $result[$key]['pecahan'] = '0,5';
 
