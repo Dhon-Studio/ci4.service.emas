@@ -37,8 +37,10 @@ class NewCertiEyeController extends ResourceController
         foreach ($result as $key => $value) {
             if ($value['pecahan'] == '0.5') $result[$key]['pecahan'] = '0,5';
 
-            if ($value['jual'] == 0) $result[$key]['jualString'] = 'Belum Ada Data';
-            else $result[$key]['jualString'] = 'Rp ' . number_format($value['jual'], 0, ',', '.');
+            if ($value['jual'] == 0) {
+                $result[$key]['jualString'] = 'Belum Ada Data';
+                $result[$key]['updated_at'] = '-';
+            } else $result[$key]['jualString'] = 'Rp ' . number_format($value['jual'], 0, ',', '.');
             if ($value['buyback'] == 0) $result[$key]['buybackString'] = 'Belum Ada Data';
             else $result[$key]['buybackString'] = 'Rp ' . number_format($value['buyback'], 0, ',', '.');
         }
