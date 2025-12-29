@@ -36,6 +36,7 @@ class NewCertiEyeController extends ResourceController
         $result = $this->certieye->orderBy('pecahan', 'asc')->findAll();
         foreach ($result as $key => $value) {
             if ($value['pecahan'] == '0.5') $result[$key]['pecahan'] = '0,5';
+            else $result[$key]['pecahan'] = (int) $result[$key]['pecahan'];
 
             if ($value['jual'] == 0) {
                 $result[$key]['jualString'] = 'Belum Ada Data';
